@@ -187,6 +187,7 @@
             })
               .then(function(data) {
                 UIkit.modal('#eventContent').hide();
+                alert('Successfully created event');
               })
               .catch(function(err) {
                 alert('There was an error creating your event. Please try again');

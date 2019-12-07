@@ -16,7 +16,7 @@
     <div class="uk-padding uk-clearfix">
       <h3 id="event_title" class="uk-position-relative uk-margin uk-margin-right uk-float-left norwester"><%= event.title || '--' %></h3>
       <% if (user.hasPermission('administer_event')) { %>
-        <div class="uk-position-relative uk-float-right"><a href="<%- '/event-report?event_id=' + event.id %>" class="uk-button button-lt uk-margin-right">Report</a><a class="uk-button button-lt">Edit</a></div>
+        <div class="uk-position-relative uk-float-right"><a href="<%- '/event-report?event_id=' + event.id %>" class="uk-button button-lt uk-margin-right">Report</a><a class="uk-button button-lt uk-margin-right">Edit</a><a class="uk-button button-lt uk-margin-right" v-on:click="deleteEvent">Delete</a></div>
       <% } %>
     </div>
 
@@ -141,6 +141,18 @@
       el: '#app',
       data: {
         event: <%- JSON.stringify(event) %>
+      },
+      methods: {
+        deleteEvent: function() {
+          var self = this;
+          axios.delete('/api/event/' + this.event.id)
+            .then(function(data) {
+              alert('Successfully deleted event ' + self.event.title);
+            })
+            .catch(function(err) {
+              alert('There was an issue processing your request. Please try again');
+            });
+        }
       }
     });
   </script>
