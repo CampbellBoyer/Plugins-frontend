@@ -760,7 +760,7 @@
               </div>
             </div>
           </div>
-          <button class="uk-button-large uk-button-danger uk-margin-top" type="button">SCHEDULE</button>
+          <button class="uk-button-large uk-button-danger uk-margin-top" type="button" v-on:click="scheduleEmail">SCHEDULE</button>
         </div>
         <div class="uk-modal-footer">
           <div class="uk-grid uk-child-width-1-4" uk-grid>
@@ -1153,6 +1153,34 @@
           }).catch(function() {
             alert('There was an issue processing your request. Please try again');
           });
+        },
+        scheduleEmail: function() {
+          alert('This feature is currently in development.');
+          // var self = this;
+          // var errMsg = '';
+          // if (!this.emailSendDate) errMsg += 'You must specify a date to schedule an email.\n';
+          // if (!this.emailSendTime) errMsg += 'You must specify a time to schedule an email.\n';
+          // if (errMsg) {
+          //   alert(errMsg);
+          //   return;
+          // }
+          
+          // this.createNewsItem().then(function(res) {
+          //   axios.post('/api/schedule-email', {
+          //     news_item_id: res.data.id,
+          //     date: self.emailSendDate,
+          //     time: self.emailSendTime
+          //   }).then(function(data) {
+          //     alert('Your email has been scheduled.');
+          //     UIkit.modal('#modal-group-1').hide();
+          //     UIkit.modal('#modal-group-2').hide();
+          //     UIkit.modal('#modal-group-3').hide();
+          //   }).catch(function(err) {
+          //     alert('There was an issue processing your request. Please try again');
+          //   });  
+          // }).catch(function() {
+          //   alert('There was an issue processing your request. Please try again');
+          // });
         }
       }
     });
