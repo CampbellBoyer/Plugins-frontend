@@ -23,6 +23,8 @@
       <h4 class="norwester font-white">Profile Information &nbsp;
         <% if (user.id === profileUser.id) { %>
         <a class="font-white" href="/profile-top-editor">(Edit)</a>
+        <% } else if (user.hasPermission('admin') || user.hasPermission('edit_profiles')) { %>
+        <a class="font-white" href="<%= '/admin-edit-profile/' + profileUser.id %>">(Edit)</a>
         <% } %>
       </h4>
     </div>
@@ -38,10 +40,11 @@
         <a href="#pw-modal" uk-toggle><span uk-icon="icon: lock"></span>&nbsp;Change Password</a>
         <% } %>
         <br><br>
-        <span class="profile-label">Name</span>
+        <span class="uk-margin-small-top profile-label">Name</span>
         <span id="name" class="profile-field"><%= [profileUser.first_name, profileUser.middle_name, profileUser.last_name].filter(function(e) { return !!e; }).join(' ') || '--' %></span>
         <span class="profile-label">Graduated</span>
         <span id="grad_year" class="profile-field"><%= profileUser.graduation_year || '--' %></span>
+        <% if (profileUser.isDeceased) { %><span class="profile-label">Deceased</span><% } %>
       </div>
 
       <div>

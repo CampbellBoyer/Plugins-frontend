@@ -30,13 +30,17 @@
     </div>
     <!-- End Alert -->
 
+    <div class="uk-margin-medium-bottom uk-margin-left uk-margin-right uk-clearfix">
+      <div class="uk-position-relative uk-float-right"><a class="uk-button uk-button-large button-lt" href="#modal-group-1" uk-toggle>Create</a></div>
+    </div>
+
     <div class="uk-card uk-card-default uk-margin-small-top uk-margin-right uk-margin-left">
       <div class="uk-card-header container-top uk-clearfix">
         <div class="uk-grid-small uk-flex-middle uk-float-left" uk-grid>
-          <h4 class="norwester font-white"><i class="fa fa-filter"></i> &nbsp; Filters</h4>
+          <h4 class="norwester font-white"><i class="fa fa-filter"></i> &nbsp; Archives</h4>
         </div>
         <div class="uk-inline uk-float-right uk-margin-small">
-          <h5 class="font-white tight"><a class="font-white" v-on:click="clearFilters">Clear Filters</a> &nbsp;|&nbsp; <a class="font-white" v-on:click="exportData">Export</a></h5>
+          <h5 class="font-white tight"><a class="font-white" v-on:click="clearFilters">Clear Search</a> &nbsp;|&nbsp; <a class="font-white" v-on:click="exportData">Export</a></h5>
         </div>
       </div>
       <div class="uk-card-body white uk-margin-remove">
@@ -109,7 +113,6 @@
 
     <div class="uk-margin-large-top uk-margin-left uk-margin-right uk-clearfix">
       <h4 class="uk-position-relative uk-margin-right uk-float-left norwester">Results</h4>
-      <div class="uk-position-relative uk-float-right"><a class="uk-button button-lt" href="#modal-group-1" uk-toggle>Create</a></div>
     </div>
 
     <div class="uk-card uk-card-default uk-margin-right uk-margin-left">
@@ -504,7 +507,7 @@
               <table class="uk-table uk-table-small uk-margin-remove">
                 <thead class="uk-card-header charcoal">
                   <tr>
-                    <th class="uk-table-shrink font-white border-none"><input class="uk-checkbox" type="checkbox" uk-tooltip="title: Select All" v-on:click="selectAll"></th>
+                    <th class="uk-table-shrink uk-text-nowrap font-white border-none"><input class="uk-checkbox" type="checkbox" uk-tooltip="title: Select All" v-on:click="selectAll">&nbsp;&nbsp;<span>select</span></th>
                     <th class="uk-text-nowrap font-white border-none">Name</th>
                     <th class="uk-table-shrink uk-text-nowrap font-white border-none">Grad Year</th>
                     <th class="uk-table-shrink uk-text-nowrap font-white border-none">Membership Type</th>

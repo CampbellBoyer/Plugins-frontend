@@ -23,6 +23,9 @@
     <!--------------------------->
     <!-- EVENT CALENDAR ADMIN -->
     <!--------------------------->
+    <div class="uk-margin-small-top uk-margin-medium-bottom uk-margin-right uk-clearfix">
+      <div class="uk-position-relative uk-float-right"><button class="uk-button uk-button-large button-lt" onclick="showCreateEventModal();">Add</button></div>
+    </div>
     <div id='calendar' class="uk-padding-small link-dk"></div>
     <!-- FullCalendar API and Scripts -->
     <link href='fullcalendar/packages/core/main.css' rel='stylesheet' />
@@ -47,12 +50,6 @@
       header: {
         left: 'title',
         right: 'listMonth,dayGridMonth,addEventButton',
-      },
-      customButtons: {
-        addEventButton: {
-          text: 'Add',
-          click: function() {UIkit.modal(eventContent).show();}
-        }
       },
       footer: {
         center: 'prev,next today',
@@ -196,6 +193,9 @@
         }
       }
     });
+  </script>
+  <script type="text/javascript">
+    function showCreateEventModal() {UIkit.modal(eventContent).show();}
   </script>
 </body>
 </html>
