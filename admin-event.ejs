@@ -3,6 +3,13 @@
 <head>
   <title>Admin Events</title>
   <%- include('header'); %>
+  <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+  <script
+  src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"
+  integrity="sha256-VazP97ZCwtekAsvgPBSUwPFKdrwD3unUfSGVYrahUqU="
+  crossorigin="anonymous"></script>
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/timepicker@1.12.0/jquery.timepicker.min.css">
+  <script src="//cdn.jsdelivr.net/npm/timepicker@1.12.0/jquery.timepicker.min.js"></script>
 </head>
 <body>
   <%- include('top-navigation'); %>
@@ -93,24 +100,18 @@
               <label class="uk-form-label" for="form-stacked-text">Start Date</label><br>
               <div class="uk-inline">
                 <span class="uk-form-icon uk-form-icon-flip" uk-icon="icon: calendar"></span>
-                <input type="date" id="form-stacked-text" class="uk-input" placeholder="mm/dd/yyyy" v-model="newEventStartDate">
+                <input id="event-start-date" type="text" class="uk-input" placeholder="mm/dd/yyyy">
               </div>
             </div>
             <div>
               <label class="uk-form-label" for="form-stacked-text">Start Time</label><br>
               <div class="uk-inline">
                 <span class="uk-form-icon uk-form-icon-flip" uk-icon="icon: clock"></span>
-                <input type="time" id="form-stacked-text" class="uk-input" placeholder="12:00" v-model="newEventStartTime">
+                <input id="event-start-time" type="string" class="uk-input timepicker" placeholder="HH:mm">
               </div>
             </div>
             <div>
               <br>
-                <!-- <div class="uk-form-controls">
-                      <select class="uk-select uk-width-auto" id="form-horizontal-select">
-                          <option>AM</option>
-                          <option>PM</option>
-                      </select>
-                  </div> -->
             </div>
           </div>
           <div class="uk-grid-small uk-child-width-expand uk-margin-medium" uk-grid>
@@ -118,23 +119,19 @@
               <label class="uk-form-label" for="form-stacked-text">End Date</label><br>
               <div class="uk-inline">
                 <span class="uk-form-icon uk-form-icon-flip" uk-icon="icon: calendar"></span>
-                <input type="date" id="form-stacked-text" class="uk-input" placeholder="mm/dd/yyyy" v-model="newEventEndDate">
+                <input id="event-end-date" type="string" class="uk-input" placeholder="mm/dd/yyyy">
               </div>
             </div>
             <div>
               <label class="uk-form-label" for="form-stacked-text">End Time</label><br>
               <div class="uk-inline">
                 <span class="uk-form-icon uk-form-icon-flip" uk-icon="icon: clock"></span>
-                <input type="time" id="form-stacked-text" class="uk-input" placeholder="12:00" v-model="newEventEndTime">
+                <input id="event-end-time" type="string" class="uk-input timepicker" placeholder="HH:mm">
               </div>
             </div>
             <div>
               <br>
               <div class="uk-form-controls">
-                <!-- <select class="uk-select uk-width-auto" id="form-horizontal-select">
-                    <option>AM</option>
-                    <option>PM</option>
-                </select> -->
               </div>
             </div>
           </div>
@@ -162,6 +159,29 @@
         newEventEndDate: null,
         newEventEndTime: null
       },
+      created: function() {
+        var self = this;
+        $(function() {
+          $('#event-start-date').datepicker({
+            onSelect: function(dateText, inst) {
+              self.newEventStartDate = dateText;
+            }
+          });
+          $('#event-start-time').timepicker();
+          $('#event-start-time').on('changeTime', function() {
+            self.newEventStartTime = $('#event-start-time').val();
+          });
+          $('#event-end-date').datepicker({
+            onSelect: function(dateText, inst) {
+              self.newEventEndDate = dateText;
+            }
+          });
+          $('#event-end-time').timepicker();
+          $('#event-end-time').on('changeTime', function() {
+            self.newEventEndTime = $('#event-end-time').val();
+          });
+        });
+      },
       methods: {
         createEvent: function() {
           var errMsg = '';
@@ -169,8 +189,10 @@
           if (!this.newEventTitle) errMsg += 'Event Title cannot be empty\n';
           if (!this.newEventDescription) errMsg += 'Event Description cannot be empty\n';
           if (!this.newEventLocation) errMsg += 'Event Location cannot be empty\n';
-          if (!this.newEventStartTime || !this.newEventStartDate) errMsg += 'Event must have a start time\n';
-          if (!this.newEventEndTime || !this.newEventEndDate) errMsg += 'Event must have an end time\n';
+          if (!this.newEventStartDate) errMsg += 'Event must have a start date\n';
+          if (!this.newEventStartTime) errMsg += 'Event must have a start time\n';
+          if (!this.newEventEndDate) errMsg += 'Event must have an end date\n';
+          if (!this.newEventEndTime) errMsg += 'Event must have an end time\n';
 
           if (errMsg) alert(errMsg);
           else {
@@ -179,8 +201,8 @@
               title: this.newEventTitle,
               description: this.newEventDescription,
               location: this.newEventLocation,
-              start: moment(this.newEventStartDate + ' ' + this.newEventStartTime, 'YYYY-MM-DD HH:mm').tz(tz).toDate(),
-              end: moment(this.newEventEndDate + ' ' + this.newEventEndTime, 'YYYY-MM-DD HH:mm').tz(tz).toDate()
+              start: moment(this.newEventStartDate + ' ' + this.newEventStartTime, 'MM/DD/YYYY HH:mmA').tz(tz).toDate(),
+              end: moment(this.newEventEndDate + ' ' + this.newEventEndTime, 'MM/DD/YYYY HH:mmA').tz(tz).toDate()
             })
               .then(function(data) {
                 UIkit.modal('#eventContent').hide();
