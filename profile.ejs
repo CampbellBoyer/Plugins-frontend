@@ -113,17 +113,20 @@
     <div>
       <div class="uk-card uk-card-default">
         <div class="uk-card-header container-top">
-          <h4 class="norwester font-white">Activities <% if (user.id === profileUser.id) { %><a class="font-white" href="/profile-top-editor">&nbsp;&nbsp;(Edit)</a><% } %></h4>
+          <h4 class="norwester font-white">Activities <% if (user.id === profileUser.id) { %><a class="font-white" href="#activities-modal" uk-toggle>&nbsp;&nbsp;(Edit)</a><% } %></h4>
         </div>
-        <% profileUser.activities.forEach(function(activity) { %>
-        <div class="uk-margin-small-top"><%= activity.name %></div>
-        <% }); %>
-        <div class="uk-padding-small">
-        <% if (user.id === profileUser.id && profileUser.activities.length == 0) { %>
-          <i>You do not currently have any listed activities.</i>
-        <% } else if (profileUser.activities.length == 0) { %>
-          <i><%= [profileUser.first_name, profileUser.middle_name, profileUser.last_name].filter(function(e) { return !!e; }).join(' ') %> does not have any listed activities.</i>
-        <% } %>
+        <div>
+          <div class="uk-margin-medium-top"></div>
+          <% profileUser.activities.forEach(function(activity) { %>
+          <div class="uk-margin-medium-left uk-margin-small-top"><%= activity.name %></div>
+          <% }); %>
+          <div class="uk-padding">
+          <% if (user.id === profileUser.id && profileUser.activities.length == 0) { %>
+            <i>You do not currently have any listed activities.</i>
+          <% } else if (profileUser.activities.length == 0) { %>
+            <i><%= [profileUser.first_name, profileUser.middle_name, profileUser.last_name].filter(function(e) { return !!e; }).join(' ') %> does not have any listed activities.</i>
+          <% } %>
+          </div>
         </div>
       </div>
     </div>
@@ -383,10 +386,137 @@
         </p>
     </div>
 </div>
+</div>
+
+<div id="activities-modal" class="uk-modal uk-close" uk-modal>
+  <div class="uk-modal-dialog">
+    <button class="uk-modal-close-default" type="button" uk-close></button>
+    <div class="uk-modal-header fog">
+      <h2 class="uk-modal-title">Add Activities</h2>
+    </div>
+
+    <div class="uk-modal-body" uk-overflow-auto>
+      <h6>Select one or more activities from the list below to add them to the user.</h6>
+
+      <div class="uk-card-body white border-charcoal uk-padding-remove uk-margin-remove">
+        <div class="charcoal border-charcoal2 uk-padding-small uk-width-1-1">
+          <div class="uk-form-controls uk-inline uk-margin-right uk-margin-bottom-small">
+            <span class="uk-form-icon" uk-icon="icon: search"></span>
+            <input class="uk-input border-charcoal2" type="text" placeholder="Search Activities" v-model="searchQuery">
+          </div>
+        </div>
+        <table class="uk-table uk-table-small uk-margin-remove">
+          <tbody>
+            <tr v-for="activity in activities">
+              <td><input :key="activity.id" class="uk-checkbox uk-margin-right" type="checkbox" :checked="currentUser.activities.some(function(e) { return e.id === activity.id; })" v-on:click="addActivity(event, activity)">{{ activity.name }}</td>
+            </tr>
+          </tbody>
+        </table>
+        <div class="uk-padding-small black">
+          <ul class="uk-pagination uk-flex-center uk-margin-remove">
+            <li><a v-on:click="paginateLeft"><span uk-icon="icon: chevron-left; ratio: 2" class="font-white"></span></a></li>
+            <li>
+              <div>
+                <select class="uk-select border-charcoal2" v-model.number="pageNumber">
+                  <option v-for="page in Array(pageCount).keys()">{{ page + 1 }}</option>
+                </select>
+              </div>
+            </li>
+            <li class="font-white uk-margin-small">of {{ pageCount }}</li>
+            <li><a v-on:click="paginateRight"><span uk-icon="icon: chevron-right; ratio: 2" class="font-white"></span></a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    <div class="uk-modal-footer fog uk-text-left">
+      <button class="uk-button button-dk" type="button" v-on:click="saveActivities">Save</button>
+      <button class="uk-button button-lt uk-modal-close" type="button">Cancel</button>
+    </div>
+  </div>
+</div>
+
 <div class="uk-margin-large"></div>
 <%- include('footer'); %>
-</div>
+
 <script type="text/javascript">
+  var activitiesModal = new Vue({
+    el: '#activities-modal',
+    data: {
+      currentUser: <%- JSON.stringify(profileUser) %>,
+      activities: [],
+      activityCount: 0,
+      pageNumber: 1,
+      pageSize: 10,
+      searchQuery: '',
+      selectedActivities: []
+    },
+    created: function() {
+      this.selectedActivities = this.currentUser.activities.slice();
+      this.refreshResults();
+    },
+    watch: {
+      pageNumber: function() {
+        this.refreshResults();
+      },
+      searchQuery: function() {
+        this.pageNumber == 1 ?
+          this.refreshResults() :
+          this.pageNumber = 1;
+      }
+    },
+    computed: {
+      pageCount: function() {
+        return Math.ceil(this.activityCount / this.pageSize);
+      }
+    },
+    methods: {
+      refreshResults: function() {
+        var self = this;
+        var queryString = '/api/activities-paginated?';
+        queryString += 'page=' + this.pageNumber;
+        queryString += '&pageSize=' + this.pageSize;
+        queryString += '&sortAlphabetical=true';
+        if (this.searchQuery) queryString += '&activityName=' + this.searchQuery;
+
+        axios.get(queryString)
+          .then(function(data) {
+            if (data.data) {
+              self.activities = data.data.activities;
+              self.activityCount = data.data.count;
+            }
+          })
+          .catch(function(err) {
+            alert('There was an issue loading the activities list. Please try again');
+          });
+      },
+      paginateLeft: function() {
+        if (this.pageNumber > 1) this.pageNumber--;
+      },
+      paginateRight: function() {
+        if (this.pageNumber < this.pageCount) this.pageNumber++;
+      },
+      addActivity: function(event, activity) {
+        this.selectedActivities.some(function(e) {
+          return e.id === activity.id;
+        }) ? 
+            this.selectedActivities.splice(this.selectedActivities.indexOf(activity), 1) :
+            this.selectedActivities.push(activity);
+      },
+      saveActivities: function() {
+        axios.post('/api/batch-join-activity', {
+          activities: this.selectedActivities
+        })
+          .then(function(data) {
+            alert('Successfully joined activities');
+            UIkit.modal('#activities-modal').hide();
+          })
+          .catch(function(err) {
+            alert('There was an issue processing your request. Please try again');
+          })
+      }
+    }
+  });
+
   var app = new Vue({
     el: '#app',
     data: {
