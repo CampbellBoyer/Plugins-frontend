@@ -70,7 +70,7 @@
             <tbody>
               <tr v-for="user in users">
                 <td class="table-border border-none">
-                  <p>{{ [user.first_name, user.middle_name, user.last_name].join(' ') }}</p>
+                  <p>{{ [user.first_name, user.middle_name, user.last_name].filter(function(e) { return !!e; }).join(' ') || '--' }}</p>
                 </td>
                 <td class="table-border border-none">
                   <p>{{ user.membership.membershipType.name }}</p>
@@ -79,7 +79,7 @@
                   {{ moment(user.membership.createdAt).format('MM/DD/YYYY') }}
                 </td>
                 <td class="table-border border-none uk-text-right">
-                  <a href="" class="uk-icon-link" uk-icon="pencil" uk-tooltip="title: EDIT" onclick="javascript:void(0);"></a>&nbsp;
+                  <a href="#edit-membership-modal" class="uk-icon-link" uk-icon="pencil" uk-tooltip="title: EDIT" uk-toggle v-on:click="setSelectedUser(user)"></a>&nbsp;
                 </td>
               </tr>
             </tbody>
@@ -101,6 +101,26 @@
         </div>
       </div>
     </div>
+
+    <div id="edit-membership-modal" class="uk-modal" uk-modal>
+      <div class="uk-modal-dialog">
+        <button class="uk-modal-close-default" type="button" uk-close></button>
+        <div class="uk-modal-header fog">
+          <h3 class="uk-modal-title norwester">Edit Membership</h3>
+        </div>
+
+        <div class="uk-modal-body fog uk-padding">
+          <label class="uk-form-label" for="form-stacked-text">Membership Type for {{ selectedUser.first_name || '--' }}:</label><br>
+          <select class="uk-select border-charcoal2 uk-width-1-1" v-model="selectedUser.membership.membership_type">
+            <option v-for="membershipType in membershipTypes" v-bind:value="membershipType.id" v-bind:selected="membershipType.id === selectedUser.membership_type">{{ membershipType.name }}</option>
+          </select>
+        </div>
+
+        <div class="uk-modal-footer fog uk-text-left">
+          <button class="uk-button button-lt" type="button" v-on:click="saveChanges">Save</button>
+        </div>
+      </div>
+    </div>
   </div>
 
   <div class="uk-margin-large"></div>  
@@ -113,10 +133,12 @@
       data: {
         users: <%- JSON.stringify(userList) %>,
         totalMembershipCount: <%= totalCount %>,
+        membershipTypes: <%- JSON.stringify(membershipTypes) %>,
         pageNumber: 1,
         pageSize: <%= defaultPageSize %>,
         searchName: '',
-        sortAlphabetical: true
+        sortAlphabetical: true,
+        selectedUser: <%- JSON.stringify(userList[0]) || JSON.stringify(null) %>
       },
       computed: {
         pageCount: function() {
@@ -139,6 +161,7 @@
           queryString += '&pageSize=' + this.pageSize;
           queryString += '&searchName=' + this.searchName;
           queryString += '&sortAlphabetical=' + this.sortAlphabetical;
+          queryString += '&includeRelations=true';
           
           axios.get(queryString)
             .then(function(data) {
@@ -165,6 +188,22 @@
           this.pageNumber == 1 ?
             this.refreshResults() :
             this.pageNumber = 1;
+        },
+        setSelectedUser: function(user) {
+          this.selectedUser = Object.assign({}, user);
+        },
+        saveChanges: function() {
+          axios.post('/api/admin-change-membership', {
+            user_id: this.selectedUser.id,
+            membership_type: this.selectedUser.membership.membership_type
+          })
+            .then(function(data) {
+              alert('Successfully updated membership.');
+              UIkit.modal('#edit-membership-modal').hide();
+            })
+            .catch(function(err) {
+              alert('There was an error processing your request. Please refresh the page and try again');
+            });
         }
       }
     });

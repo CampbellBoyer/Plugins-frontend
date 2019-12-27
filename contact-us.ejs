@@ -10,8 +10,7 @@
   <% } else { %>
     <div class="uk-padding uk-position-relative uk-position-small uk-position-top-center uk-text-center">
       <a href="/">
-        <h1 id="alumni_name" class="tight">Fern Creek</h1>
-        <h3 class="norwester tight">Alumni Association</h3>
+        <h3 class="norwester tight"><%= site_header %></h3>
       </a>
     </div>
   <% } %>
@@ -31,21 +30,11 @@
           </div>
           <div>
             <h5>
-              <% if (siteAdminConfig.address_line_1) { %> 
-                <span id="address_line1"><%= siteAdminConfig.address_line_1 %></span><br>
-              <% } %> 
-              <% if (siteAdminConfig.address_line_2) { %> 
-                <span id="address_line2"><%= siteAdminConfig.address_line_2 %></span><br>
-              <% } %> 
-              <% if (siteAdminConfig.city) { %> 
-                <span id="city"><%= siteAdminConfig.city %></span>,
-              <% } %> 
-              <% if (siteAdminConfig.state) { %> 
-                <span id="state"><%= siteAdminConfig.state %></span> 
-              <% } %>
-              <% if (siteAdminConfig.zip_code) { %> 
-                <span id="zip"><%= siteAdminConfig.zip_code %></span>
-              <% }%>
+              <span id="address_line1"><%= siteAdminConfig.address_line_1 || '--' %></span><br>
+              <span id="address_line2"><%= siteAdminConfig.address_line_2 %></span><br>
+              <span id="city"><%= siteAdminConfig.city %></span>
+              <span id="state"><%= siteAdminConfig.state %></span> 
+              <span id="zip"><%= siteAdminConfig.zip_code %></span>
             </h5>
           </div>
         </div>
@@ -56,9 +45,7 @@
             <span uk-icon="mail"></span>
           </div>
           <div>
-            <% if (siteAdminConfig.primary_email) { %> 
-              <h5><span id="admin_email"><%= siteAdminConfig.primary_email %></span></h5>
-            <% } %>
+            <h5><span id="admin_email"><%= siteAdminConfig.primary_email || '--' %></span></h5>
           </div>
         </div>
 
@@ -68,9 +55,7 @@
             <span uk-icon="receiver"></span>
           </div>
           <div>
-            <% if (siteAdminConfig.phone_number) { %> 
-              <h5><span id="admin_phone"><%= siteAdminConfig.phone_number %></span></h5>
-            <% } %>
+            <h5><span id="admin_phone"><%= siteAdminConfig.phone_number || '--' %></span></h5>
           </div>
         </div>
       </div>

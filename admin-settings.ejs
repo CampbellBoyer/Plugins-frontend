@@ -37,6 +37,14 @@
             <h4 class="norwester font-white">Branding</h4>
           </div>
           <div class="uk-card-body white">
+            <label class="profile-label">Site Header</label>
+            <div class="uk-margin">
+              <div uk-form-custom="target: true">
+                <input class="uk-input uk-form-width-large" type="text" v-model="siteAdminConfig.site_header">
+              </div>
+            </div>
+            <hr class="uk-margin-medium">
+
             <label class="profile-label">Site Logo</label>
             <div class="uk-width-1-1 uk-margin-bottom uk-margin-top">
               <img id="site-branding-logo" src="/api/photo/site-branding-logo" alt="">
@@ -49,6 +57,7 @@
               </div>
             </div>
             <hr class="uk-margin-medium">
+
             <label class="profile-label">Site Favicon</label>
             <div class="uk-margin" uk-margin>
               <div uk-form-custom="target: true">
@@ -275,6 +284,19 @@
       },
       methods: {
         saveSiteBranding: function() {
+          if (this.siteAdminConfig.site_header) {
+            console.log(this.siteAdminConfig.site_header);
+
+            axios.post('/api/admin-update-site-header', {
+              site_header: this.siteAdminConfig.site_header
+            })
+              .then(function(data) {
+                alert('Successfully updated site header');
+              })
+              .catch(function(err) {
+                alert('There was an issue processing your request. Please try again');
+              });
+          }
           if ($('#site-branding-logo-upload')[0].files[0]) {
             var payload = new FormData();
             payload.append('siteBrandingLogo', $('#site-branding-logo-upload')[0].files[0]);
