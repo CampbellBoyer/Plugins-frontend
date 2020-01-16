@@ -137,6 +137,17 @@
               </div>
             </div>
           </div>
+          <div>
+            <label class="uk-form-label">
+              <input id="allow-signups" type="checkbox" name="allow-signups" v-model="newEventAllowSignups" />Allow Signups
+            </label>
+          </div>
+          <br />
+          <div>
+            <label class="uk-form-label" for="signup-fee">Registration fee:</label>
+            <input class="uk-input" id="signup-fee" name="signup-fee" type="number" v-model="newEventFee">
+          </div>
+          <br />
         </div>
 
         <div class="uk-modal-footer fog uk-text-left">
@@ -159,7 +170,9 @@
         newEventStartDate: null,
         newEventStartTime: null,
         newEventEndDate: null,
-        newEventEndTime: null
+        newEventEndTime: null,
+        newEventAllowSignups: true,
+        newEventFee: 0.00
       },
       created: function() {
         var self = this;
@@ -196,6 +209,9 @@
           if (!this.newEventEndDate) errMsg += 'Event must have an end date\n';
           if (!this.newEventEndTime) errMsg += 'Event must have an end time\n';
 
+          if (moment(this.newEventStartDate + ' ' + this.newEventStartTime, 'MM/DD/YYYY HH:mmA').toDate().getTime() > moment(this.newEventEndDate + ' ' + this.newEventEndTime, 'MM/DD/YYYY HH:mmA').toDate().getTime()) 
+            errMsg += 'End time must be after start time';
+
           if (errMsg) alert(errMsg);
           else {
             var tz = moment.tz.guess();
@@ -204,7 +220,9 @@
               description: this.newEventDescription,
               location: this.newEventLocation,
               start: moment(this.newEventStartDate + ' ' + this.newEventStartTime, 'MM/DD/YYYY HH:mmA').tz(tz).toDate(),
-              end: moment(this.newEventEndDate + ' ' + this.newEventEndTime, 'MM/DD/YYYY HH:mmA').tz(tz).toDate()
+              end: moment(this.newEventEndDate + ' ' + this.newEventEndTime, 'MM/DD/YYYY HH:mmA').tz(tz).toDate(),
+              signups: this.newEventAllowSignups,
+              price: this.newEventFee
             })
               .then(function(data) {
                 UIkit.modal('#eventContent').hide();

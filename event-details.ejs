@@ -28,103 +28,148 @@
         <span uk-icon="icon: calendar; ratio: 2"></span> To:&nbsp; <span id="end_date">{{ moment(event.end).format('MMMM DD, YYYY') || '--' }}</span>&nbsp;at  <span id="end_time">{{ moment(event.end).format('h:mm A') || '--' }}</span><br><br>
       <span uk-icon="icon: location; ratio: 2"></span> Location:&nbsp; <span id="location">{{ event.location || '--' }}</span></h5><br>
 
-    <hr>
+      <hr>
 
-    <h4 class="uk-text-center norwester">Signup Form </h4>
-    <!-- Far Left Section -->
-    <div class="uk-grid uk-child-width-1-3" uk-grid>
-      <div></div>
-      <div>
-        <label class="profile-label">Name</label>
-        <input id="name" class="uk-input border-charcoal2 uk-margin-bottom" type="text" value="<%= [user.first_name, user.middle_name, user.last_name].filter(function(e) { return !!e; }).join(' ') %>">
-        <label class="profile-label">Nickname</label>
-        <input id="nickname" class="uk-input border-charcoal2 uk-margin-bottom" type="text" value="<%= user.nicknames %>">
-        <span class="profile-label">Email</span>
-        <input id="email" class="uk-input border-charcoal2 uk-margin-bottom" type="text" value="<%= user.email %>">
-        <span class="profile-label">Home Phone</span>
-        <input id="home_phone" class="uk-input border-charcoal2 uk-margin-bottom" type="text" value="<%= user.home_phone %>">
-        <span class="profile-label">Cell Phone</span>
-        <input id="cell_phone" class="uk-input border-charcoal2 uk-margin-bottom" type="text" value="<%= user.cell_phone %>">
-        <span class="profile-label">Address</span>
-        <span>
-        <input id="address_line1" class="uk-input border-charcoal2 uk-margin-bottom" type="text" value="<%= user.address_line_1 %>"><br>
-        <input id="address_line2" class="uk-input border-charcoal2 uk-margin-bottom" type="text" value="<%= user.address_line_2 %>"><br>
-        <input id="city" class="uk-input uk-width-1-3 border-charcoal2 uk-margin-bottom" type="text" value="<%= user.city %>">, <select class="uk-select uk-width-1-4 border-charcoal2 uk-margin-bottom" value="<%= user.state %>">
-          <option value=""></option>
-          <option value="AL">AL</option>
-          <option value="AK">AK</option>
-          <option value="AZ">AZ</option>
-          <option value="AR">AR</option>
-          <option value="CA">CA</option>
-          <option value="CO">CO</option>
-          <option value="CT">CT</option>
-          <option value="DE">DE</option>
-          <option value="DC">DC</option>
-          <option value="FL">FL</option>
-          <option value="GA">GA</option>
-          <option value="HI">HI</option>
-          <option value="ID">ID</option>
-          <option value="IL">IL</option>
-          <option value="IN">IN</option>
-          <option value="IA">IA</option>
-          <option value="KS">KS</option>
-          <option value="KY">KY</option>
-          <option value="LA">LA</option>
-          <option value="ME">ME</option>
-          <option value="MD">MD</option>
-          <option value="MA">MA</option>
-          <option value="MI">MI</option>
-          <option value="MN">MN</option>
-          <option value="MS">MS</option>
-          <option value="MO">MO</option>
-          <option value="MT">MT</option>
-          <option value="NE">NE</option>
-          <option value="NV">NV</option>
-          <option value="NH">NH</option>
-          <option value="NJ">NJ</option>
-          <option value="NM">NM</option>
-          <option value="NY">NY</option>
-          <option value="NC">NC</option>
-          <option value="ND">ND</option>
-          <option value="OH">OH</option>
-          <option value="OK">OK</option>
-          <option value="OR">OR</option>
-          <option value="PA">PA</option>
-          <option value="RI">RI</option>
-          <option value="SC">SC</option>
-          <option value="SD">SD</option>
-          <option value="TN">TN</option>
-          <option value="TX">TX</option>
-          <option value="UT">UT</option>
-          <option value="VT">VT</option>
-          <option value="VA">VA</option>
-          <option value="WA">WA</option>
-          <option value="WV">WV</option>
-          <option value="WI">WI</option>
-          <option value="WY">WY</option>
-          </select>
-        <input id="zip" class="uk-input uk-width-1-4 border-charcoal2 uk-margin-bottom" type="text" value="<%= user.zip_code %>">
-      </span>
-      <button class="uk-button button-dk uk-width-1-1" onclick="signUp()">Sign Up</button>
+      <% if (event.allow_signups) { %>
+      <h4 class="uk-text-center norwester">Signup Form </h4>
+      <!-- Far Left Section -->
+      <div class="uk-grid uk-child-width-1-3" uk-grid>
+        <div></div>
+        <div>
+          <label class="profile-label">Name</label>
+          <input id="name" class="uk-input border-charcoal2 uk-margin-bottom" type="text" value="<%= [user.first_name, user.middle_name, user.last_name].filter(function(e) { return !!e; }).join(' ') %>">
+          <label class="profile-label">Nickname</label>
+          <input id="nickname" class="uk-input border-charcoal2 uk-margin-bottom" type="text" value="<%= user.nicknames %>">
+          <span class="profile-label">Email</span>
+          <input id="email" class="uk-input border-charcoal2 uk-margin-bottom" type="text" value="<%= user.email %>">
+          <span class="profile-label">Home Phone</span>
+          <input id="home_phone" class="uk-input border-charcoal2 uk-margin-bottom" type="text" value="<%= user.home_phone %>">
+          <span class="profile-label">Cell Phone</span>
+          <input id="cell_phone" class="uk-input border-charcoal2 uk-margin-bottom" type="text" value="<%= user.cell_phone %>">
+          <span class="profile-label">Address</span>
+          <span>
+          <input id="address_line1" class="uk-input border-charcoal2 uk-margin-bottom" type="text" value="<%= user.address_line_1 %>"><br>
+          <input id="address_line2" class="uk-input border-charcoal2 uk-margin-bottom" type="text" value="<%= user.address_line_2 %>"><br>
+          <input id="city" class="uk-input uk-width-1-3 border-charcoal2 uk-margin-bottom" type="text" value="<%= user.city %>">, <select class="uk-select uk-width-1-4 border-charcoal2 uk-margin-bottom" value="<%= user.state %>">
+            <option value=""></option>
+            <option value="AL">AL</option>
+            <option value="AK">AK</option>
+            <option value="AZ">AZ</option>
+            <option value="AR">AR</option>
+            <option value="CA">CA</option>
+            <option value="CO">CO</option>
+            <option value="CT">CT</option>
+            <option value="DE">DE</option>
+            <option value="DC">DC</option>
+            <option value="FL">FL</option>
+            <option value="GA">GA</option>
+            <option value="HI">HI</option>
+            <option value="ID">ID</option>
+            <option value="IL">IL</option>
+            <option value="IN">IN</option>
+            <option value="IA">IA</option>
+            <option value="KS">KS</option>
+            <option value="KY">KY</option>
+            <option value="LA">LA</option>
+            <option value="ME">ME</option>
+            <option value="MD">MD</option>
+            <option value="MA">MA</option>
+            <option value="MI">MI</option>
+            <option value="MN">MN</option>
+            <option value="MS">MS</option>
+            <option value="MO">MO</option>
+            <option value="MT">MT</option>
+            <option value="NE">NE</option>
+            <option value="NV">NV</option>
+            <option value="NH">NH</option>
+            <option value="NJ">NJ</option>
+            <option value="NM">NM</option>
+            <option value="NY">NY</option>
+            <option value="NC">NC</option>
+            <option value="ND">ND</option>
+            <option value="OH">OH</option>
+            <option value="OK">OK</option>
+            <option value="OR">OR</option>
+            <option value="PA">PA</option>
+            <option value="RI">RI</option>
+            <option value="SC">SC</option>
+            <option value="SD">SD</option>
+            <option value="TN">TN</option>
+            <option value="TX">TX</option>
+            <option value="UT">UT</option>
+            <option value="VT">VT</option>
+            <option value="VA">VA</option>
+            <option value="WA">WA</option>
+            <option value="WV">WV</option>
+            <option value="WI">WI</option>
+            <option value="WY">WY</option>
+            </select>
+          <input id="zip" class="uk-input uk-width-1-4 border-charcoal2 uk-margin-bottom" type="text" value="<%= user.zip_code %>">
+        </span>
+        <button class="uk-button button-dk uk-width-1-1" onclick="signUp()">Sign Up</button>
+        </div>
+        <div></div>
       </div>
-      <div></div>
+      <br>
+      <hr>
+      <br>
+      <% } %>
     </div>
-    <br>
-    <hr>
-    <br>
-    <div class="uk-grid uk-child-width-1-3" uk-grid>
-      <div></div>
-      <div v-if="event.price > 0">
-        <h4 class="uk-text-center">Cost to attend is &#x24; <span id="cost">{{ event.price }}</span></h4>
-        <button class="uk-button paypal uk-width-1-1"><strong>Purchase via &nbsp;<i>Paypal</i></strong></button>
-      </div>
-      <div></div>
-    </div>
-    </div>
-
-    <div class="uk-margin-large"></div>
   </div>
+  <% if (event.price > 0) { %> 
+  <div class="uk-grid uk-child-width-1-3" uk-grid>
+    <div></div>
+
+    <div>
+      <h4 class="uk-text-center">Cost to attend is &#x24; <span id="cost"><%= event.price %></span></h4>
+      <div id="paypal-checkout" class="uk-button uk-width-1-1"></div>
+    </div>
+    <div></div>
+  </div>
+  <script type="text/javascript">
+    paypal.Buttons({
+      createOrder: function(data, actions) {
+        return actions.order.create({
+          purchase_units: [{
+            amount: {
+              value: '<%= event.price %>',
+              currency: 'USD'
+            }
+          }]
+        });
+      },
+      onApprove: function(data, actions) {
+        return actions.order.capture().then(function(details) {
+          axios.post('/api/add-event-attendee', {
+            eventId: <%= event.id %>,
+            userId: <%= user.id %>,
+            paypalOrderId: data.orderID
+          })
+            .then(function(data) {
+              alert('Successfully registered for event.');
+            })
+            .catch(function(err) {
+              (err.response.status == 409) ? alert(err.response.data) : 
+              alert('We were unable to process your transaction. Please try again or contact an administrator.');
+            });
+        });
+      },
+      onError: function(err) {
+        alert('We were unable to process your transaction. Please try again or contact an administrator.');
+      },
+      style: {
+        color: 'blue',
+        shape: 'rect',
+        size: 'responsive',
+        fundingincons: false
+      }
+    }).render('#paypal-checkout');
+  </script>
+  <%  } %>
+
+  <div class="uk-margin-large"></div>
   <%- include('footer'); %>
+  
   <script type="text/javascript">
     function signUp() {
       axios.post('/api/add-event-attendee', {
