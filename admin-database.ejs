@@ -272,6 +272,14 @@
             </select>
           </div>
 
+          <div class="uk-inline uk-margin-bottom">
+            <label class="uk-form-label">Activities</label>
+            <select class="uk-select border-charcoal2" v-model="searchActivities">
+              <option value="" default>All</option>
+              <option v-for="activity in activityOptions" v-bind:value="activity.id">{{ activity.name }}</option>
+            </select>
+          </div>
+
           <div class="uk-inline uk-float-right">
             <button class="uk-button button-lt" v-on:click="redoSearch" type="button">Search</button>
           </div>
@@ -495,7 +503,7 @@
   <div id="modal-new-alum" class="uk-modal-full" uk-modal>
     <div class="uk-modal-dialog fog uk-padding" uk-overflow-auto uk-height-viewport>
       <button class="uk-modal-close-full uk-close-large fog" type="button" uk-close></button>
-      <h3 class="norwester font-black uk-text-left uk-padding">Add Alumnist to Database</h3>
+      <h3 class="norwester font-black uk-text-left uk-padding">Add Alumni to Database</h3>
       <div class="uk-container border-charcoal white uk-margin">
 
         <div class="uk-grid-match uk-child-width-1-3@m uk-flex-top uk-padding" uk-grid>
@@ -623,10 +631,12 @@
         searchMortalityStatus: '',
         searchHOFStatus: '',
         searchGroups: '',
+        searchActivities: '',
         userCount: <%= userCount %>,
         pageNumber: 1,
         pageSize: <%= defaultPageSize %>,
         groupOptions: <%- JSON.stringify(groups) %>,
+        activityOptions: <%- JSON.stringify(activities) %>,
         roleOptions: <%- JSON.stringify(roles) %>,
         membershipTypes: <%- JSON.stringify(membershipTypes) %>,
         users: <%- JSON.stringify(userList) %>,
@@ -672,6 +682,7 @@
           if (this.searchMortalityStatus) queryString += ('&mortality=' + this.searchMortalityStatus);
           if (this.searchHOFStatus) queryString += ('&hofStatus=' + this.searchHOFStatus);
           if (this.searchGroups) queryString += ('&groupId=' + this.searchGroups);
+          if (this.searchActivities) queryString += ('&activityId=' + this.searchActivities);
           
           axios.get('/api/users-paginated?' + queryString)
             .then(function(data) {
@@ -704,6 +715,7 @@
           this.searchMortalityStatus = '';
           this.searchHOFStatus = '';
           this.searchGroups = '';
+          this.searchActivities = '';
         },
         redoSearch: function() {
           this.pageNumber == 1 ?
@@ -743,7 +755,8 @@
           if (this.searchMortalityStatus) queryString += ('&mortality=' + this.searchMortalityStatus);
           if (this.searchHOFStatus) queryString += ('&hofStatus=' + this.searchHOFStatus);
           if (this.searchGroups) queryString += ('&groupId=' + this.searchGroups);
-          
+          if (this.searchActivities) queryString += ('&activityId=' + this.searchActivities);
+
           axios.get('/api/export-user-csv?' + queryString)
             .then(function(data) {
               if (data.data) {
