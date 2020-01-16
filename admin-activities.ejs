@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Admin Database</title>
+  <%- include('header'); %>
+</head>
+<body>
+  <%- include('top-navigation'); %>
+
+  <div class="link-tab uk-margin-left uk-padding-small uk-margin-right">
+    <h4>
+      <a href="/admin-database" class="uk-padding-small">Alumni</a>&nbsp;&nbsp;&nbsp;
+      <a href="/admin-group" class="uk-padding-small">Groups</a>&nbsp;&nbsp;&nbsp;
+      <a href="/admin-activities" class="tab-active uk-padding-small">Activities</a>&nbsp;&nbsp;&nbsp;
+      <a href="/admin-event" class="uk-padding-small">Events</a>&nbsp;&nbsp;&nbsp;
+      <a href="/admin-news" class="uk-padding-small">News</a>&nbsp;&nbsp;&nbsp;
+      <a href="/admin-security" class="uk-padding-small">Security</a>&nbsp;&nbsp;&nbsp;
+      <a href="/admin-settings" class="uk-padding-small">Settings</a>
+      <a href="/admin-membership" class="uk-padding-small">Memberships</a>
+    </h4>
+    <hr class="border-slate"></hr>
+  </div>
+
+  <!-- Activities table -->
+  <div id="activities">
+    <div class="uk-margin-small-top uk-margin-left uk-margin-right uk-clearfix">
+      <h4 class="uk-position-relative uk-margin-right uk-float-left norwester">Activity Database</h4>
+      <div class="uk-position-relative uk-float-right"><button class="uk-button button-lt" href="#add-activity" uk-toggle>Add an Activity</button></div>
+    </div>
+    <div class="uk-card uk-card-default uk-margin-top uk-margin-right uk-margin-left">
+      <div class="uk-card-header container-top uk-clearfix">
+        <p class="font-white float-left uk-inline"> Showing <span id="table_start">{{ (pageNumber * pageSize) - (pageSize - 1) }}</span> - <span id="table_end">{{ Math.min( totalActivityCount, pageNumber * pageSize) }}</span> of <span id="table_total">{{ totalActivityCount }}</span></p>
+        <div class="uk-float-right uk-visible@m">
+          <select class="uk-select border-charcoal2 uk-inline uk-width-small" v-model.number="pageSize">
+            <option><%= defaultPageSize %></option>
+            <option>50</option>
+            <option>100</option>
+          </select>
+          <span class="font-white">&nbsp;per page</span>
+        </div>
+      </div>
+      <div class="charcoal uk-padding-small">
+        <form class="uk-width-1-1 uk-padding-small">
+          <div class="uk-form-controls uk-inline uk-width-1-3@m uk-margin-right uk-margin-bottom-small">
+            <span class="uk-form-icon" uk-icon="icon: search"></span>
+              <input class="uk-input border-charcoal2" type="text" placeholder="Search by Name" v-model="searchActivities">
+          </div>
+          <div class="uk-inline uk-width-1-3@m uk-margin-right uk-margin-bottom-small">
+            <select class="uk-select border-charcoal2" v-model="sortAlphabetical">
+              <option value="true">Sort Alphabetically (A-Z)</option>
+              <option value="false">Sort Alphabetically (Z-A)</option>
+            </select>
+          </div>
+          <div class="uk-inline uk-float-right uk-margin-bottom-small">
+            <h5 class="font-white"><a class="font-white" v-on:click="clearFilters">Clear Filters</a> | <a class="font-white" v-on:click="redoSearch">Search</a></h5>
+          </div>
+        </form>
+      </div>
+
+      <div class="uk-card-body white uk-padding-remove uk-margin-remove uk-width-1-1">
+        <table class="uk-table uk-table-large uk-margin-remove uk-width-1-1 uk-overflow-auto">
+          <div class="uk-card-body white uk-padding-remove">
+            <thead>
+              <th>Activity Name</th>
+              <th></th>
+            </thead>
+            <tbody>
+              <tr v-for="activity in activities">
+                <td class="table-border border-none">{{ activity.name }}</td>
+                <td class="table-border border-none"><a href="#confirm-delete-activity" class="uk-icon-link" uk-icon="trash" uk-toggle v-on:click="setSelectedActivity(activity)"></a></td>
+              </tr>
+            </tbody>
+          </div>
+        </table>
+        <div class="uk-padding-small black">
+          <ul class="uk-pagination uk-flex-center uk-margin-remove">
+            <li><a v-on:click="paginateLeft"><span uk-icon="icon: chevron-left; ratio: 2" class="font-white"></span></a></li>
+            <li>
+              <div>
+                <select class="uk-select border-charcoal2" v-model.number="pageNumber">
+                  <option v-for="page in Array(pageCount).keys()">{{ page + 1 }}</option>
+                </select>
+              </div>
+            </li>
+            <li class="font-white uk-margin-small">of {{ pageCount }}</li>
+            <li><a v-on:click="paginateRight"><span uk-icon="icon: chevron-right; ratio: 2" class="font-white"></span></a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <!-- Add Activity modal -->
+    <div id="add-activity" uk-modal>
+    <div class="uk-modal-dialog">
+      <button class="uk-modal-close-default" type="button" uk-close></button>
+      <div class="uk-modal-header fog">
+        <h3 class="uk-modal-title norwester">Add an Activity</h3>
+      </div>
+
+      <div class="uk-modal-body fog uk-padding">
+        <label class="uk-form-label" for="form-stacked-text">Name</label><br>
+        <input class="uk-input border-charcoal2 uk-width-1-1" type="text" v-model="newActivityName"><br><br>
+      </div>
+
+      <div class="uk-modal-footer fog uk-text-left">
+        <button class="uk-button button-lt" type="button" v-on:click="createActivity">Add</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Delete Activity Modal-->
+  <div id="confirm-delete-activity" uk-modal>
+    <div class="uk-modal-dialog">
+      <button class="uk-modal-close-default" type="button" uk-close></button>
+      <div class="uk-modal-header fog">
+        <h2 class="uk-modal-title">Confirm Delete</h2>
+      </div>
+
+      <div class="uk-modal-body fog">
+        <h5><strong>Are you sure you want to delete this activity?</strong></h5>
+        <h6>This action cannot be undone.</h6>
+      </div>
+
+      <div class="uk-modal-footer fog uk-text-left">
+        <button class="uk-button button-dk" type="button" v-on:click="deleteActivity">Delete</button>
+        <button class="uk-button button-lt uk-modal-close" type="button">Cancel</button>
+      </div>
+    </div>
+  </div>
+  </div>
+
+  <div class="uk-margin-large"></div>
+  <%- include('footer'); %>
+  
+  <script type="text/javascript">
+    var activitiesApp = new Vue({
+      el: '#activities',
+      data: {
+        pageNumber: 1,
+        pageSize: <%= defaultPageSize %>,
+        activities: <%- JSON.stringify(activities) %>,
+        totalActivityCount: <%= activityCount %>,
+        searchActivities: '',
+        sortAlphabetical: true,
+        newActivityName: '',
+        selectedActivity: <%- JSON.stringify(activities[0]) || JSON.stringify(null) %>
+      },
+      computed: {
+        pageCount: function() {
+          return Math.ceil(this.totalActivityCount / this.pageSize);
+        }
+      },
+      watch: {
+        // if page size changes, display new results from beginning; change if not desired behavior
+        pageSize: function(newValue, oldValue) {
+          this.pageNumber === 1 ? this.refreshResults() : this.pageNumber = 1;
+        },
+        pageNumber: function(newValue, oldValue) {
+          this.refreshResults();
+        }
+      },
+      methods: {
+        refreshResults: function() {
+          var queryString = '';
+          queryString += ('page=' + this.pageNumber);
+          queryString += ('&pageSize=' + this.pageSize);
+          queryString += ('&sortAlphabetical=' + this.sortAlphabetical);
+          if (this.searchActivities) queryString += ('&activityName=' + this.searchActivities);
+
+          var self = this;
+          axios.get('/api/activities-paginated?' + queryString)
+            .then(function(data) {
+              if (data.data) {
+                self.activities = data.data['activities'];
+                self.totalActivityCount = data.data['count'];
+              }
+            })
+            .catch(function(err) {
+              alert('There was an issue updating your search results. Please try again');
+            });
+        },
+        redoSearch: function() {
+          this.pageNumber === 1 ? 
+            this.refreshResults() : 
+            this.pageNumber = 1;
+        },
+        clearFilters: function() {
+          this.searchActivities = '';
+          this.sortAlphabetical = true;
+        },
+        paginateLeft: function() {
+          if (this.pageNumber > 1) this.pageNumber--;
+        },
+        paginateRight: function() {
+          if (this.pageNumber < this.pageCount) this.pageNumber++;
+        },
+        createActivity: function() {
+          axios.post('/api/admin-create-activity', {
+            activity_name: this.newActivityName
+          })
+            .then(function(data) {
+              alert('Successfully created activity');
+              UIkit.modal('#add-activity').hide();
+            })
+            .catch(function(err) {
+              alert('There was an issue processing your request. Please try again shortly');
+            });
+        },
+        setSelectedActivity: function(activity) {
+          this.selectedActivity = activity;
+        },
+        deleteActivity: function() {
+          var self = this;
+          axios.delete('/api/activity/' + this.selectedActivity.id)
+            .then(function(data) {
+              alert('Successfully deleted activity');
+              UIkit.modal('#confirm-delete-activity').hide();
+            })
+            .catch(function(err) {
+              alert('There was an issue processing your request. Please try again shortly');
+            });
+        }
+      }
+    });  
+  </script>
+</body>
+</html>
