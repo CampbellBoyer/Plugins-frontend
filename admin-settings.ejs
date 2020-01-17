@@ -44,6 +44,12 @@
                 <input class="uk-input uk-form-width-large" type="text" v-model="siteAdminConfig.site_header">
               </div>
             </div>
+            <label class="profile-label">Site Header Redirect Domain</label>
+            <div class="uk-margin">
+              <div uk-form-custom="target: true">
+                <input class="uk-input uk-form-width-large" type="text" v-model="siteAdminConfig.site_header_redirect">
+              </div>
+            </div>
             <hr class="uk-margin-medium">
 
             <label class="profile-label">Site Logo</label>
@@ -285,11 +291,13 @@
       },
       methods: {
         saveSiteBranding: function() {
-          if (this.siteAdminConfig.site_header) {
-            console.log(this.siteAdminConfig.site_header);
-
+          if (this.siteAdminConfig.site_header || this.siteAdminConfig.site_header_redirect) {
+            if (this.siteAdminConfig.site_header_redirect && this.siteAdminConfig.site_header_redirect.indexOf('//') != -1) {
+              this.siteAdminConfig.site_header_redirect = this.siteAdminConfig.site_header_redirect.split('//')[1];
+            }
             axios.post('/api/admin-update-site-header', {
-              site_header: this.siteAdminConfig.site_header
+              site_header: this.siteAdminConfig.site_header,
+              site_header_redirect: this.siteAdminConfig.site_header_redirect
             })
               .then(function(data) {
                 alert('Successfully updated site header');
