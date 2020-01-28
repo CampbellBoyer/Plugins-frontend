@@ -499,7 +499,7 @@
         this.selectedActivities.some(function(e) {
           return e.id === activity.id;
         }) ? 
-            this.selectedActivities.splice(this.selectedActivities.indexOf(activity), 1) :
+            this.selectedActivities.splice(this.selectedActivities.findIndex(function(el) { return el.id == activity.id; }), 1) :
             this.selectedActivities.push(activity);
       },
       saveActivities: function() {
