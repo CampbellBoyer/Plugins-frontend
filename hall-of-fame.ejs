@@ -165,55 +165,55 @@
   </div>
 
 </div>
-
-<div class="uk-margin-large"></div>
-<%- include('footer'); %>
 </div>
-<script type="text/javascript">
-  var app = new Vue({
-    el: '#app',
-    data: {
-      users: <%- JSON.stringify(users) %>,
-      nominee_name: '',
-      nominee_graduation_year: undefined,
-      nomination_reason: ''
-    },
-    methods: {
-        submitNomination: function() {
-            var validationMessage = '';
-            if (!this.nominee_name) {
-                validationMessage += 'You must specify a nominee to submit a nomination.\n';
-            }
-            if (!this.nominee_graduation_year) {
-                validationMessage += 'You must specify the nominee\'s graduation year to submit a nomination.\n';
-            }
-            if (!this.nomination_reason) {
-                validationMessage += 'You must specify a reason for your nomination.'
-            }
-            if (validationMessage) {
-                alert(validationMessage);
-                return;
-            }
-            
-            var nominationRequest = {
-                nominee_name: this.nominee_name,
-                nominee_graduation_year: parseInt(this.nominee_graduation_year),
-                nomination_reason: this.nomination_reason
-            };
-            var self = this;
-            axios.post('/api/hof-nomination', nominationRequest)
-                .then(function(data) {
-                    self.nominee_name = '';
-                    self.nominee_graduation_year = undefined;
-                    self.nomination_reason = '';
-                    UIkit.modal('#nomination-modal').hide();
-                })
-                .catch(function(err) {
-                    alert('There was an issue saving your nomination request. Please try again or contact an administrator')
-                });
-        }
-    }
-  });
-</script>
+
+  <div class="uk-margin-large"></div>
+  <%- include('footer'); %>
+  <script type="text/javascript">
+    var app = new Vue({
+      el: '#app',
+      data: {
+        users: <%- JSON.stringify(users) %>,
+        nominee_name: '',
+        nominee_graduation_year: undefined,
+        nomination_reason: ''
+      },
+      methods: {
+          submitNomination: function() {
+              var validationMessage = '';
+              if (!this.nominee_name) {
+                  validationMessage += 'You must specify a nominee to submit a nomination.\n';
+              }
+              if (!this.nominee_graduation_year) {
+                  validationMessage += 'You must specify the nominee\'s graduation year to submit a nomination.\n';
+              }
+              if (!this.nomination_reason) {
+                  validationMessage += 'You must specify a reason for your nomination.'
+              }
+              if (validationMessage) {
+                  alert(validationMessage);
+                  return;
+              }
+              
+              var nominationRequest = {
+                  nominee_name: this.nominee_name,
+                  nominee_graduation_year: parseInt(this.nominee_graduation_year),
+                  nomination_reason: this.nomination_reason
+              };
+              var self = this;
+              axios.post('/api/hof-nomination', nominationRequest)
+                  .then(function(data) {
+                      self.nominee_name = '';
+                      self.nominee_graduation_year = undefined;
+                      self.nomination_reason = '';
+                      UIkit.modal('#nomination-modal').hide();
+                  })
+                  .catch(function(err) {
+                      alert('There was an issue saving your nomination request. Please try again or contact an administrator')
+                  });
+          }
+      }
+    });
+  </script>
 </body>
 </html>

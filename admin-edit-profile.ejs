@@ -215,66 +215,67 @@
 </div>
 </form>
 </div>
-<div class="uk-margin-large"></div>
-<%- include('footer'); %>
-<script type="text/javascript">
-  var app = new Vue({
-    el: '#app',
-    data: {
-      user: <%- JSON.stringify(profileUser) %>
-    },
-    methods: {
-      saveProfile: function() {
-        var self = this;
-        var userPayload = Object.assign({}, this.user);
-        var formData = new FormData();
+  <div class="uk-margin-large"></div>
+  <%- include('footer'); %>
+  
+  <script type="text/javascript">
+    var app = new Vue({
+      el: '#app',
+      data: {
+        user: <%- JSON.stringify(profileUser) %>
+      },
+      methods: {
+        saveProfile: function() {
+          var self = this;
+          var userPayload = Object.assign({}, this.user);
+          var formData = new FormData();
 
-        var fileUpload = $('#profile_photo_upload')[0].files[0];
-        if (fileUpload) {
-          if (fileUpload.size/1024/1024 > 1) {
-            alert('Please keep image uploads below 1 MB. You can compress your image using www.wecompress.com if you would like to use the current selected photo.');
-            return;
+          var fileUpload = $('#profile_photo_upload')[0].files[0];
+          if (fileUpload) {
+            if (fileUpload.size/1024/1024 > 1) {
+              alert('Please keep image uploads below 1 MB. You can compress your image using www.wecompress.com if you would like to use the current selected photo.');
+              return;
+            }
+            formData.append('profile_photo_upload', fileUpload);
           }
-          formData.append('profile_photo_upload', fileUpload);
-        }
-        
-        formData.append('user', JSON.stringify(userPayload));        
+          
+          formData.append('user', JSON.stringify(userPayload));        
 
-        axios.post('/api/admin-edit-profile/' + String(this.user.id), formData, {
-          headers: {
-            'Content-Type': 'multipart/form-data'
-          }
-        })
-          .then(function(data) {
-            if (data.redirect) {
-              window.location.pathname = data.redirect;
-            } else {
-              window.location.pathname = '/profile/' + String(self.user.id);
+          axios.post('/api/admin-edit-profile/' + String(this.user.id), formData, {
+            headers: {
+              'Content-Type': 'multipart/form-data'
             }
           })
-          .catch(function(err) {
-            alert('There was an issue processing your request. Please try again or contact an administrator');
-          });
-      },
-      updateProfilePicSelection: function() {
-        if (FileReader) {
-          var el = $('#profile_photo_upload').get(0);
-          if (el.files && el.files[0]) {
-            var fr = new FileReader();
-            
-            fr.onload = function(e) {
-              $('#profile-picture').attr('src', e.target.result);
-            };
-            fr.readAsDataURL(el.files[0]);
+            .then(function(data) {
+              if (data.redirect) {
+                window.location.pathname = data.redirect;
+              } else {
+                window.location.pathname = '/profile/' + String(self.user.id);
+              }
+            })
+            .catch(function(err) {
+              alert('There was an issue processing your request. Please try again or contact an administrator');
+            });
+        },
+        updateProfilePicSelection: function() {
+          if (FileReader) {
+            var el = $('#profile_photo_upload').get(0);
+            if (el.files && el.files[0]) {
+              var fr = new FileReader();
+              
+              fr.onload = function(e) {
+                $('#profile-picture').attr('src', e.target.result);
+              };
+              fr.readAsDataURL(el.files[0]);
 
+            }
+          } else {
+            console.log('FileReader not supported in this browser.');
           }
-        } else {
-          console.log('FileReader not supported in this browser.');
         }
       }
-    }
-  });
-</script>
+    });
+  </script>
 
 </body>
 </html>
