@@ -111,12 +111,14 @@
     </div>
 
     <div>
-      <div class="uk-card uk-card-default">
+      <div class="uk-card uk-card-default white">
         <div class="uk-card-header container-top">
           <h4 class="norwester font-white">Activities <% if (user.id === profileUser.id) { %><a class="font-white" href="#activities-modal" uk-toggle>&nbsp;&nbsp;(Edit)</a><% } %></h4>
         </div>
         <div>
+          <% if (profileUser.activities.length > 0) { %>
           <div class="uk-margin-medium-top"></div>
+          <% } %>
           <% profileUser.activities.forEach(function(activity) { %>
           <div class="uk-margin-medium-left uk-margin-small-top"><%= activity.name %></div>
           <% }); %>
@@ -141,7 +143,7 @@
           <h4 class="norwester font-white">Membership</h4>
         </div>
         <div class="uk-card-body white">
-          <span class="profile-label uk-float-left">Type</span> <a class="uk-float-right" href="/membership-options">View Benefits &nbsp;<i class="fa fa-external-link"></i></a>
+          <span class="profile-label uk-float-left">Type</span> <a class="uk-float-right" href="/membership-types">View Benefits &nbsp;<i class="fa fa-external-link"></i></a>
           <br>
           <span id="nickname" class="profile-field">
             <span uk-icon="check"></span> &nbsp;<%= profileUser.membership.membershipType.name %>
@@ -156,7 +158,7 @@
           <span class="profile-label">Renewal Scheduled On</span><br>
           <span id="renews_on" class="profile-field"><%= profileUser.membership.renewal_date %></span><br><br>
           <span class="profile-label">Auto-Renew?</span><br>
-          <span id="auto-renew" class="profile-field"><%= profileUser.membership.auto_renew_membership ? 'Yes' : 'No' %></span> <a href="/membership-options">&nbsp;(Edit)</a>
+          <span id="auto-renew" class="profile-field"><%= profileUser.membership.auto_renew_membership ? 'Yes' : 'No' %></span> <a href="/membership-types">&nbsp;(Edit)</a>
           <% } %>
         </div>
       </div>
@@ -340,7 +342,7 @@
       </div>
     </div>
     <% } else if (user.id === profileUser.id) { %>
-      <p>To contribute to the Memories page, please upgrade your <a href="/membership-options">membership plan</a>.</p>
+      <p>To contribute to the Memories page, please upgrade your <a href="/membership-types">membership plan</a>.</p>
     <% } else { %>
       <i><%= [profileUser.first_name, profileUser.middle_name, profileUser.last_name].filter(function(e) { return !!e; }).join(' ') %> has not yet shared any memories.</i>
     <% } %>
@@ -507,7 +509,7 @@
           activities: this.selectedActivities
         })
           .then(function(data) {
-            alert('Successfully joined activities');
+            alert('Successfully edited activities');
             UIkit.modal('#activities-modal').hide();
           })
           .catch(function(err) {

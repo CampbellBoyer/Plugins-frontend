@@ -219,7 +219,7 @@
                 <input id="zip_code" class="uk-input border-charcoal2" placeholder="ZIP" type="text" v-model="user.zip_code">
             </div>
         </div>
-    <div class="uk-position-relative uk-margin uk-position-bottom-left"><a class="uk-button button-lt" href="/membership-options">Skip</a></div>
+    <div class="uk-position-relative uk-margin uk-position-bottom-left"><a class="uk-button button-lt" href="/membership-types">Skip</a></div>
     <div class="uk-position-relative uk-margin uk-position-bottom-right" v-on:click="saveProfile"><a class="uk-button button-dk">Save</a></div>
 </form>
 </div>
@@ -259,7 +259,7 @@
             if (data.redirect) {
               window.location.pathname = data.redirect;
             } else {
-              window.location.pathname = '/membership-options';
+              window.location.pathname = '/membership-types';
             }
           })
           .catch(function(err) {

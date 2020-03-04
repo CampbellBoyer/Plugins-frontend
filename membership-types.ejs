@@ -6,10 +6,6 @@
 </head>
 <body>
   <div id="app">
-    <div class="uk-position-small uk-position-top-left">
-      <a href="/membership-options"> <span uk-icon="arrow-left"></span>Back to Membership Options</a>
-    </div><br>
-
     <!-- Membership Options -->
     <div class="uk-padding uk-position-relative uk-position-small uk-position-top-center uk-text-center">
       <h3 id="alumni_name" class="norwester"><%= site_header %></h3>
@@ -18,7 +14,7 @@
     <h2 class="uk-text-center tight">Membership Types</h2>
     <h5 class="uk-text-center tight">Select a membership type to purchase one.</h5>
     <div class="uk-padding-large">
-      <div class="uk-child-width-1-3@m" uk-grid>
+      <div class="uk-child-width-1-2@m" uk-grid data-uk-grid-match>
         <% membershipTypes.forEach((membershipType) => { %>
         <div>
           <div class="uk-card-small uk-card-default">
@@ -28,6 +24,7 @@
             </div>
             <div class="uk-button uk-width-1-1" id="<%- 'paypal-button-' + membershipType.id %>"></div>
           </div>
+          <% if (membershipType.price > 0) { %>
           <script type="text/javascript">
             paypal.Buttons({
               createOrder: function(data, actions) {
@@ -47,6 +44,7 @@
                     membershipType: <%= membershipType.id %>
                   })
                     .then(function(data) {
+                      alert('Membership processed successfully.');
                       window.location.href = data.redirect ? data.redirect : '/profile';
                     })
                     .catch(function(err) {
@@ -62,6 +60,23 @@
               }
             }).render('<%- "#paypal-button-" + membershipType.id %>');
           </script>
+          <% } else { %>
+          <script>
+            $('<%- "#paypal-button-" + membershipType.id %>').html('<button type="button" style="width: 100%; height: 55px; margin-bottom: 15px; border: 0px; border-radius: 4px; background-color: #009CDE; color: white; font-size: 1.2em; cursor: pointer;"><i><b>Select</b></i></button>');
+            $('<%- "#paypal-button-" + membershipType.id %>').click(function() {
+                  axios.post('/api/process-membership-subscription', {
+                    membershipType: <%= membershipType.id %>
+                  })
+                    .then(function(data) {
+                      alert('Membership updated successfully.');
+                      window.location.href = data.redirect ? data.redirect : '/profile';
+                    })
+                    .catch(function(err) {
+                      alert('We were unable to process your transaction. Please try again or contact an administrator.');
+                    });
+            });
+          </script>
+          <% } %>
         </div>
         <% });%>
       </div>
